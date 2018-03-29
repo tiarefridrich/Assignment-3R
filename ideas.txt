@@ -1,0 +1,15 @@
+Group Ideas: 
+
+Distribution of number of species throughout years - or specific species 
+Number of species in each taxa in one year or over the years 
+The number of species in each plot type 
+Species, taxa, and years all together in one year;  two graphs in one year -  species and taxa through time 
+Weight change through time trend - in winter they eat less in spring they eat more 
+relationship between sex and weight - box plot 
+relationship between high foot length and species or sex 
+Look at the ranges of size 
+weight and hindfoot length trend between males and females 
+handoff length vs sex 
+mean weight and hindfoot length of different sex vs plot id 
+Number of individuals seen over a year, by month or over years to see trends
+
