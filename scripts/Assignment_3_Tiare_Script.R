@@ -4,6 +4,24 @@ library(lubridate)
 library(gridExtra)
 library(dplyr) 
 
+#######################################################
+# The file (portal_mammals.sqlite) has been downloaded manually
+
+# Connect to the portal SQLite database
+mammals <- DBI::dbConnect(RSQLite::SQLite(), "data/portal_mammals.sqlite")
+
+# Information about database
+src_dbi(mammals)
+
+# Reading tables from database
+surveys <- tbl(mammals, "surveys")
+plots <- tbl(mammals, "plots")
+species <- tbl(mammals, "species")
+surveys
+plots
+species
+######################################################
+
 surveys <- read_csv("data/portal_data_joined.csv")
 #remove the NAs
 surveys_NAsrem <- surveys %>% 
