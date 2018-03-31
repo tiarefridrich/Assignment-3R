@@ -1,6 +1,6 @@
 ---
-title: "Example plot"
-author: "Mamoon Y. Ismail"
+title: "R Homework Assignment"
+author: "Mamoon Y. Ismail, Jeeban Panthi, Tiare Fridrich"
 date: "`r Sys.Date()`"
 output: html_document
 ---
@@ -65,8 +65,7 @@ Reading Colected data into a file called survey
 
 
 ```{r loaddata, echo=TRUE}
-surveys <- read_csv("data/portal_data_joined.csv")
-str(surveys)
+surveys <- read_csv("~/Desktop/rclass/homework/Assignment-3R/data_output/surveys_NAsrem.csv")
 
 ```
 
@@ -75,21 +74,46 @@ str(surveys)
 
 Add plots of different relations
 
-```{r Plot, echo=TRUE}
-plot(as.factor(surveys$plot_id))
-```
-
 
 
 ## Session Info:
 
 Include “session info” in your document, preferably at the bottom: that lists the version of R that you’re using plus all of the packages you’ve loaded
 
+These are the packages we need to deal with
 
-
-```{r session_info, include=TRUE, echo=TRUE, results='markup'}
-devtools::session_info()
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(lubridate)
+library(gridExtra)
+library(dplyr)
+library(ggpubr)
+library(Hmisc)
 ```
 
+###1. Relationship between sex and hindfoot length
+```{r}
+ggplot(surveys, aes(x=sex, y=hindfoot_length))+geom_boxplot(alpha = 1, color='red')+xlab('Sex')+ylab('Length of hindfoot (inch)')+stat_summary(fun.y=mean, color="blue", geom="point",  shape=15, size=1,show_guide = T, show.legend = T)
+```
+Figure 1: Hindfoot length for male and female. The blue dot indicates the mean (average) hindfoot length. 
 
+###2. Number of individuals of each of the species classfied by sex
+```{r}
+ggplot(surveys, aes(species_id))+geom_bar(aes(fill=sex))+ylab('Number of individuals recorded')+xlab('Species ID') 
+```
+Figure 2: Number of individuals of each of the species classfied by sex
 
+#3. Correlationship between weight and hindfoot length
+```{r}
+ggscatter(surveys, x = "weight", y = "hindfoot_length",  add = "reg.line", conf.int = TRUE, cor.coef = TRUE, cor.method = "pearson",  xlab = "Hindfoot Length (inch)", ylab = "Weight (gram)")
+```
+Figure 3: Scatter plot showing the correlation between weight and hindfoot length of species
+
+The p-value of the test is less than the significance level alpha = 0.05. We can conclude that weight and hindfoot length are significantly positively correlated with a correlation coefficient of 0.68 and p-value of 2.2*10^{-16}
+
+#4.4.	Hindfoot length of different species
+```{r}
+ggplot(data = surveys, aes(x = species_id, y = hindfoot_length)) +  geom_boxplot(alpha=1, color='red')+xlab('Species ID')+ylab('Hindfoot length (inch)')+stat_summary(fun.y=mean, color="blue", geom="point",  shape=15, size=1,show_guide = T, show.legend = T)
+```
+Figure 4: Box plot of hindfoot length of different species. The blue dot indicates the average (mean) hindfoot length.
