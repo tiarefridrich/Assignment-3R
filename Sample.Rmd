@@ -117,3 +117,66 @@ The p-value of the test is less than the significance level alpha = 0.05. We can
 ggplot(data = surveys, aes(x = species_id, y = hindfoot_length)) +  geom_boxplot(alpha=1, color='red')+xlab('Species ID')+ylab('Hindfoot length (inch)')+stat_summary(fun.y=mean, color="blue", geom="point",  shape=15, size=1,show_guide = T, show.legend = T)
 ```
 Figure 4: Box plot of hindfoot length of different species. The blue dot indicates the average (mean) hindfoot length.
+
+###5 Number of species found yearly
+```{r species_count}
+# Yearly counts
+year_counts <- surveys_NAsrem %>%
+  group_by(year, species_id) %>% tally()
+# Plot
+ggplot(year_counts, aes(x=year, y=n, color=species_id)) +
+  geom_col()+facet_wrap(~species_id)
+
+```
+Figure 5: time series faceting plot showing the count of each species yearly.
+
+###6 Number of species found in each plot type
+```{r species_count_by_plot}
+# plot counts
+Plot_counts <- surveys_NAsrem %>% group_by(year, plot_type) %>% tally()
+# plot
+ggplot(Plot_counts, aes(x=year, y=n, color=plot_type)) +
+  geom_col()+facet_wrap(~plot_type)
+
+```
+Figure 6: time series faceting plot showing the count of species observed in each plot type yearly.
+
+###7 Males and females Average weight yearly
+```{r Sex_average_weight}
+# Species mean weight 
+spe_meanweight <- surveys_NAsrem %>% group_by(year,species_id, sex) %>%
+  summarize(mean_weight = mean(weight))
+# plot
+ggplot(spe_meanweight, aes(x=year, y=mean_weight, color=sex)) +
+  geom_line()+facet_wrap(~species_id) + theme_bw() +
+  theme(panel.grid = element_blank()) +
+  theme(axis.text.x = element_text(colour = "grey20", size = 10, angle = 90, hjust = 0.5, vjust = 0.5))
+```
+Figure 7: time series faceting plot showing yearly average weight of each male and female species.
+
+###8 Count of species observed
+```{r species count}
+# I'm making few plots here which are slightly different and we may end up chose some of them or none
+ggplot(surveys_NAsrem) + stat_count(aes(x = species_id, fill = species_id))
+
+# Count of male and female species observed
+ggplot(surveys_NAsrem) + stat_count(aes(x = species_id, fill = sex))
+
+# Count of male and female species observed dodged
+ggplot(surveys_NAsrem) + stat_count(aes(x = species_id, fill = sex), position = "dodge")
+
+```
+Figure 8: Bar graph showing number of each species obesrevd
+
+###9 relationship between species weight and sex
+```{r weight_sex}
+ggplot(surveys_NAsrem) + geom_boxplot(aes(x = species_id, y = weight, fill = sex)) +
+  coord_flip()
+
+```
+Figure 9: Box plot (axis fliped) showing the relationship between species sex and weight
+
+
+
+
+
