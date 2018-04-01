@@ -67,7 +67,8 @@ Reading Colected data into a file called survey
 
 
 ```{r loaddata, echo=TRUE}
-surveys_NAsrem <- read_csv("~/Desktop/data-shell/Sample_Class/data_output/surveys_NAsrem.csv")
+surveys <- read_csv("https://ndownloader.figshare.com/files/2292169")
+surveys_NAsrem <- surveys %>% filter(!is.na(weight), !is.na(hindfoot_length), !is.na(sex), species_id != "")
 
 ```
 
