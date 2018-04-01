@@ -1,6 +1,6 @@
 ---
 title: "R Homework Assignment"
-author: "Mamoon Y. Ismail, Jeeban Panthi, Tiare Fridrich"
+author: "Jeeban Panthi, Mamoon Y. Ismail, Tiare Fridrich"
 date: "`r Sys.Date()`"
 output: html_document
 ---
@@ -92,58 +92,54 @@ library(ggpubr)
 library(Hmisc)
 ```
 
-###1. Relationship between sex and hindfoot length
-```{r}
-ggplot(surveys, aes(x=sex, y=hindfoot_length))+geom_boxplot(alpha = 1, color='red')+xlab('Sex')+ylab('Length of hindfoot (inch)')+stat_summary(fun.y=mean, color="blue", geom="point",  shape=15, size=1,show_guide = T, show.legend = T)
+#1. Relationship between sex and hindfoot length
+```{r relationship between sex and hindfoot length boxplot}
+ggplot(surveys_NAsrem, aes(x=sex, y=hindfoot_length))+
+  geom_boxplot(alpha = 1,color='blue')+xlab('Sex')+ylab('Length of hindfoot (inch)')+
+  stat_summary(fun.y=mean, color="red", geom="point", shape=15, size=1,show_guide = T, show.legend = T) + theme_bw()
 ```
-Figure 1: Hindfoot length for male and female. The blue dot indicates the mean (average) hindfoot length. 
+Figure 1: Hindfoot length for male and female. The red dot indicates the mean (average) hindfoot length. 
 
-###2. Number of individuals of each of the species classfied by sex
-```{r}
-ggplot(surveys, aes(species_id))+geom_bar(aes(fill=sex))+ylab('Number of individuals recorded')+xlab('Species ID') 
+#2. Number of individuals of each of the species classfied by sex
+```{r Number of individuals per species by sex}
+ggplot(surveys_NAsrem, aes(species_id))+geom_bar(aes(fill=sex))+
+  ylab('Number of individuals recorded')+xlab('Species ID')+theme(axis.text.x = element_text(angle = 90)) 
 ```
 Figure 2: Number of individuals of each of the species classfied by sex
 
 #3. Correlationship between weight and hindfoot length
-```{r}
-ggscatter(surveys, x = "weight", y = "hindfoot_length",  add = "reg.line", conf.int = TRUE, cor.coef = TRUE, cor.method = "pearson",  xlab = "Hindfoot Length (inch)", ylab = "Weight (gram)")
+```{r linear relationship between weight and hindfoot length of individuals}
+ggscatter(surveys_NAsrem, x = "weight", y = "hindfoot_length", color = "black", shape = 21, size = 2, add = "reg.line", conf.int = TRUE, cor.coef = TRUE, cor.method = "pearson",  xlab = "Hindfoot Length (inch)", ylab = "Weight (gram)")
 ```
 Figure 3: Scatter plot showing the correlation between weight and hindfoot length of species
 
 The p-value of the test is less than the significance level alpha = 0.05. We can conclude that weight and hindfoot length are significantly positively correlated with a correlation coefficient of 0.68 and p-value of 2.2*10^{-16}
 
-#4.4.	Hindfoot length of different species
-```{r}
-ggplot(data = surveys, aes(x = species_id, y = hindfoot_length)) +  geom_boxplot(alpha=1, color='red')+xlab('Species ID')+ylab('Hindfoot length (inch)')+stat_summary(fun.y=mean, color="blue", geom="point",  shape=15, size=1,show_guide = T, show.legend = T)
+#4.	Hindfoot length of different species
+```{r boxplot of hindfoot lengths of different species}
+ggplot(surveys_NAsrem, aes(x = species_id, y = hindfoot_length)) +
+  geom_boxplot(alpha=1, color= 'black')+xlab('Species ID')+ylab('Hindfoot length (inch)')+
+  stat_summary(fun.y=mean, color="blue", geom="point",  shape=15, size=1,show_guide = T,show.legend = T)+ theme(axis.text.x = element_text(angle = 90))
 ```
 Figure 4: Box plot of hindfoot length of different species. The blue dot indicates the average (mean) hindfoot length.
 
-###5 Number of species found yearly
+#5 Number of species found yearly
 ```{r species_count}
-# Yearly counts
-year_counts <- surveys_NAsrem %>%
-  group_by(year, species_id) %>% tally()
-# Plot
-ggplot(year_counts, aes(x=year, y=n, color=species_id)) +
-  geom_col()+facet_wrap(~species_id)
-
+ggplot(data = yearly_counts, aes(x=year, y=n, group = species_id, color = species_id)) + 
+  geom_line() + facet_wrap(~ species_id) + theme_bw() +ylab('Number of Individuals') + xlab('Year')
 ```
-Figure 5: time series faceting plot showing the count of each species yearly.
+Figure 5: Time series faceting plot showing the count of each species yearly.
 
-###6 Number of species found in each plot type
+#6 Number of species found in each plot type
 ```{r species_count_by_plot}
-# plot counts
 Plot_counts <- surveys_NAsrem %>% group_by(year, plot_type) %>% tally()
-# plot
-ggplot(Plot_counts, aes(x=year, y=n, color=plot_type)) +
-  geom_col()+facet_wrap(~plot_type)
-
+ggplot(Plot_counts, aes(x=year, y=n, color=plot_type)) + geom_point()+facet_wrap(~plot_type)
 ```
 Figure 6: time series faceting plot showing the count of species observed in each plot type yearly.
 
-###7 Males and females Average weight yearly
+#7 Males and females average weight yearly PROBLEMS
 ```{r Sex_average_weight}
-# Species mean weight 
+# Species mean weight *********
 spe_meanweight <- surveys_NAsrem %>% group_by(year,species_id, sex) %>%
   summarize(mean_weight = mean(weight))
 # plot
@@ -154,29 +150,38 @@ ggplot(spe_meanweight, aes(x=year, y=mean_weight, color=sex)) +
 ```
 Figure 7: time series faceting plot showing yearly average weight of each male and female species.
 
-###8 Count of species observed
-```{r species count}
-# I'm making few plots here which are slightly different and we may end up chose some of them or none
+#8 Count of species observed
+```{r bar chart of number of individuals of each species found}
 ggplot(surveys_NAsrem) + stat_count(aes(x = species_id, fill = species_id))
-
-# Count of male and female species observed
-ggplot(surveys_NAsrem) + stat_count(aes(x = species_id, fill = sex))
-
-# Count of male and female species observed dodged
-ggplot(surveys_NAsrem) + stat_count(aes(x = species_id, fill = sex), position = "dodge")
-
 ```
-Figure 8: Bar graph showing number of each species obesrevd
+Figure 8: Bar graph showing number of individuals of each species obeserved. 
 
-###9 relationship between species weight and sex
+#9 Number of individuals of each sex by species surveyed
+````{r number of individuals of each species by sex}
+ggplot(surveys_NAsrem) + stat_count(aes(x = species_id, fill = sex), position = "dodge")
+````
+Figure 9: Number of individuals of each sex by species surveyed. 
+
+#10 relationship between species weight and sex
 ```{r weight_sex}
+#this one looks a little weird, gotta play around with it 
 ggplot(surveys_NAsrem) + geom_boxplot(aes(x = species_id, y = weight, fill = sex)) +
   coord_flip()
-
 ```
-Figure 9: Box plot (axis fliped) showing the relationship between species sex and weight
+Figure 10: Box plot (axis fliped) showing the relationship between species sex and weight
 
+#11 Number of individuals seen by month of the year
+````{r}
+ggplot(data = species_by_month, aes(x=month, y=n, group = species_id, color = species_id, group = species_id)) + 
+  geom_line() +ylab('Number of Individuals')+ xlab('Month of the Year')
+````
+Figure 11: Number of individuals surveyed by month of the year
 
-
-
-
+#12 Number of individuals seen over time, separated by sex 
+````{r}
+yearly_sex_counts <- surveys_NAsrem %>% group_by(year, species_id, sex) %>%
+  tally
+ggplot(data = yearly_sex_counts, aes(x = year, y = n, color = sex, group = sex)) +
+  geom_line() + facet_wrap(~ species_id) + theme_bw() +ylab('Number of Individuals') + xlab('Year')+ theme(axis.text.x = element_text(angle = 90))
+````
+Figure 12: Number of individuals of each sex seen over time, separated by species 
