@@ -144,7 +144,7 @@ Figure 6: time series faceting plot showing the count of species observed in eac
 ```{r Sex_average_weight}
 # Species mean weight *********
 spe_meanweight <- surveys_NAsrem %>% group_by(year,species_id, sex) %>%
-  summarize(mean_weight = mean(weight))
+  mutate(mean_weight = mean(weight))
 # plot
 ggplot(spe_meanweight, aes(x=year, y=mean_weight, color=sex)) +
   geom_line()+facet_wrap(~species_id) + theme_bw() +
@@ -172,13 +172,6 @@ ggplot(surveys_NAsrem) + geom_boxplot(aes(x = species_id, y = weight, fill = sex
   coord_flip()
 ```
 Figure 10: Box plot (axis fliped) showing the relationship between species sex and weight
-
-#11 Number of individuals seen by month of the year
-````{r}
-ggplot(surveys_NAsrem, aes(x=month, y=n, group = species_id, color = species_id, group = species_id)) + 
-  geom_line() +ylab('Number of Individuals')+ xlab('Month of the Year')
-````
-Figure 11: Number of individuals surveyed by month of the year
 
 #12 Number of individuals seen over time, separated by sex 
 ````{r}
