@@ -190,3 +190,11 @@ ggplot(data = yearly_sex_counts, aes(x = year, y = n, color = sex, group = sex))
   theme_bw() +ylab('Number of Individuals') + xlab('Year')+ theme(axis.text.x = element_text(angle = 90))
 ````
 Figure 12: Number of individuals of each sex seen over time, separated by species 
+
+#13 Relationship between hindfoot length and weight of species OT
+````{r OT weight and hindfoot length relationship}
+species_OT <- surveys_NAsrem %>% filter(species_id == 'OT')
+ggscatter(species_OT, x = "weight", y = "hindfoot_length", color = "black", shape = 21, size = 2, add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",  xlab = "Hindfoot Length (inch)", ylab = "Weight (gram)")
+````
+Figure 13: 
