@@ -1,5 +1,5 @@
 ---
-title: "R Homework Assignment"
+title: "R Homework Assignment 3"
 author: "Jeeban Panthi, Mamoon Y. Ismail, Tiare Fridrich"
 date: "`r Sys.Date()`"
 output:
@@ -7,37 +7,18 @@ output:
   pdf_document: default
 ---
 
-**BOLD**
+# Introduction
 
-_ITALICS_
+Analyzing the surveys dataset to look for trends. Removed the NAs, which left only the rodent taxa. 
 
-1- The backticks (`) indicate code
+## Global Options
 
-2- r indicates R code
+```{r global_options, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE,
+                      fig.width=12, fig.height=8, fig.path='figs/')
+```
 
-
-3- In-line code: is how to include r code results into text
-
-The version of R is `r getRversion()`
-
-4- It’s usually best to give each code chunk a name, like chunk_name ```{r chunk_name}
-
-5- echo=FALSE indicates that the code will not be shown in the final document like this ```{r chunk_name, echo=FALSE}
-
-6- Use results="hide" to hide the results/output (but here the code would still be displayed), ```{r chunk_name, results="hide"}
-
-7- Use include=FALSE to have the chunk evaluated, but neither the code nor its output displayed, ```{r chunk_name, include=FALSE}
-
-8- For figures, you’ll want to use options like fig.width and fig.height. For example: {r scatterplot, fig.width=8, fig.height=6}. Note that if include=FALSE, all of the code, results, and figures will be suppressed. If include=TRUE and results="hide", the results will be hidden but figures will still be shown. To hide the figures, use fig.show="hide". NOTE: results=hide is wrong; you need results="hide".
-
-9- Global chunk options: use the same set of chunk options throughout a document to avoid retype it in every chunk, so you want to set some global chunk options at the top of your document. For example, I might use include=FALSE or at least echo=FALSE globally for a report to a scientific collaborator who wouldn’t want to see all of the code. And I might want something like fig.width=12 and fig.height=6 if I generally want those sizes for my figures.
-
-10- If you want a particular chunk to have a different behavior, for example, to have a different figure height, you’d specify a different option within that chunk. For example: {r a_taller_figure, fig.height=32}.
-
-
-### Loading librarry
-
-A chunk needed to load the library
+## Session Info:
 
 ```{r loadlib, echo=TRUE}
 library(tidyverse)
@@ -47,51 +28,19 @@ library(gridExtra)
 library(dplyr)
 library(ggpubr)
 library(Hmisc)
+#want the output to be hidden but not the packages?
 ```
 
-## Global Options
-
-
-```{r global_options, include=TRUE}
-#These are default settings eg fig size or whether you print code
-knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE,
-                      fig.width=12, fig.height=8, fig.path='figs/')
-```
-
-## SURVEYS
-
-This is a survey data that has been collected about animal species.
-
-
-
-### Reading Data
-
-
-
-Reading Colected data into a file called survey
-
-
+## Reading Data
 
 ```{r loaddata, echo=TRUE}
-surveys_NAsrem <- read_csv("~/Desktop/data-shell/Sample_Class/data_output/surveys_NAsrem.csv")
-
+surveys <- read_csv("https://ndownloader.figshare.com/files/2292169")
+surveys_NAsrem <- surveys %>% filter(!is.na(weight), !is.na(hindfoot_length), !is.na(sex), species_id != "")
 ```
 
+#Plots
 
-## Plotting
-
-Add plots of different relations
-
-
-
-## Session Info:
-
-Include “session info” in your document, preferably at the bottom: that lists the version of R that you’re using plus all of the packages you’ve loaded
-
-These are the packages we need to deal with
-
-
-#1. Relationship between sex and hindfoot length
+###1. Relationship between sex and hindfoot length
 ```{r relationship between sex and hindfoot length boxplot}
 ggplot(surveys_NAsrem, aes(x=sex, y=hindfoot_length))+
   geom_boxplot(alpha = 1,color='blue')+xlab('Sex')+ylab('Length of hindfoot (inch)')+
@@ -99,70 +48,69 @@ ggplot(surveys_NAsrem, aes(x=sex, y=hindfoot_length))+
 ```
 Figure 1: Hindfoot length for male and female. The red dot indicates the mean (average) hindfoot length. 
 
-#2. Number of individuals of each of the species classfied by sex
-```{r Individuals_per_species_sex}
-ggplot(surveys_NAsrem, aes(species_id))+geom_bar(aes(fill=sex))+
-  ylab('Number of individuals recorded')+xlab('Species ID')+theme(axis.text.x = element_text(angle = 90)) 
+###2. Count of species observed
+```{r bar_chart_individuals_each_species}
+ggplot(surveys_NAsrem) + stat_count(aes(x = species_id, fill = species_id))+ylab('Number of individuals recorded')+xlab('Species ID')+theme(axis.text.x = element_text(angle = 90)) 
 ```
 Figure 2: Number of individuals of each of the species classfied by sex
 
-#3. Correlationship between weight and hindfoot length
+###3. Correlationship between weight and hindfoot length
 ```{r weight_and_hindfoot_length}
-ggscatter(surveys_NAsrem, x = "weight", y = "hindfoot_length", color = "black", shape = 21, size = 2, add = "reg.line", conf.int = TRUE, cor.coef = TRUE, cor.method = "pearson",  xlab = "Hindfoot Length (inch)", ylab = "Weight (gram)")
+ggscatter(surveys_NAsrem, x = "weight", y = "hindfoot_length", color = "black", shape = 21, size = 2, add = "reg.line", conf.int = TRUE, cor.coef = TRUE, cor.method = "pearson",  xlab = "Hindfoot Length (mm)", ylab = "Weight (gram)")
 ```
 Figure 3: Scatter plot showing the correlation between weight and hindfoot length of species
 
 The p-value of the test is less than the significance level alpha = 0.05. We can conclude that weight and hindfoot length are significantly positively correlated with a correlation coefficient of 0.68 and p-value of 2.2*10^{-16}
 
-#4.	Hindfoot length of different species
+###4. Relationship between hindfoot length and weight of species OT
+````{r OT_weight_hindfoot_length}
+species_OT <- surveys_NAsrem %>% filter(species_id == 'OT')
+ggscatter(species_OT, x = "weight", y = "hindfoot_length", color = "black", shape = 21, size = 2, add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",  xlab = "Hindfoot Length (mm)", ylab = "Weight (gram)")
+````
+Figure 4: Relationship between hindfoot length and weight of individuals for species OT. 
+
+###5.	Hindfoot length of different species
 ```{r boxplot_hindfoot_lengths_different_species}
 ggplot(surveys_NAsrem, aes(x = species_id, y = hindfoot_length)) +
-  geom_boxplot(alpha=1, color= 'black')+xlab('Species ID')+ylab('Hindfoot length (inch)')+
+  geom_boxplot(alpha=1, color= 'black')+xlab('Species ID')+ylab('Hindfoot length (mm)')+
   stat_summary(fun.y=mean, color="blue", geom="point",  shape=15, size=1,show_guide = T,show.legend = T)+ theme(axis.text.x = element_text(angle = 90))
 ```
-Figure 4: Box plot of hindfoot length of different species. The blue dot indicates the average (mean) hindfoot length.
+Figure 5: Box plot of hindfoot length of different species. The blue dot indicates the average (mean) hindfoot length.
 
-#5 Number of species found yearly
+###6. Number of species found by year in each plot type  
 ```{r species_count}
 yearly_counts <- surveys_NAsrem %>% group_by(year, species_id) %>% tally()
 ggplot(data = yearly_counts, aes(x=year, y=n, group = species_id, color = species_id)) + 
   geom_line() + facet_wrap(~ species_id) + theme_bw() +ylab('Number of Individuals') + xlab('Year')
 ```
-Figure 5: Time series faceting plot showing the count of each species yearly.
+Figure 6: Time series faceting plot showing the count of each species yearly.
 
-#6 Number of species found in each plot type
+###7. Number of individuals surveyed each year by plot type
 ```{r species_count_by_plot}
 Plot_counts <- surveys_NAsrem %>% group_by(year, plot_type) %>% tally()
 ggplot(Plot_counts, aes(x=year, y=n, color=plot_type)) + geom_point()+facet_wrap(~plot_type)
 ```
-Figure 6: time series faceting plot showing the count of species observed in each plot type yearly.
+Figure 7: Time series faceting plot showing the count of individuals observed in each plot type yearly.
 
-#7 Males and females average weight yearly PROBLEMS
+###8. Males and females average weight yearly
 ```{r Sex_average_weight}
-# Species mean weight *********
 spe_meanweight <- surveys_NAsrem %>% group_by(year,species_id, sex) %>%
   mutate(mean_weight = mean(weight))
-# plot
 ggplot(spe_meanweight, aes(x=year, y=mean_weight, color=sex)) +
   geom_line()+facet_wrap(~species_id) + theme_bw() +
   theme(panel.grid = element_blank()) +
   theme(axis.text.x = element_text(colour = "grey20", size = 10, angle = 90, hjust = 0.5, vjust = 0.5))
 ```
-Figure 7: time series faceting plot showing yearly average weight of each male and female species.
+Figure 8: time series faceting plot showing yearly average weight of each male and female species.
 
-#8 Count of species observed
-```{r bar_chart_individuals_each_species}
-ggplot(surveys_NAsrem) + stat_count(aes(x = species_id, fill = species_id))
-```
-Figure 8: Bar graph showing number of individuals of each species obeserved. 
-
-#9 Number of individuals of each sex by species surveyed
+###9. Number of individuals of each sex by species surveyed
 ````{r number_individuals_species_sex}
 ggplot(surveys_NAsrem) + stat_count(aes(x = species_id, fill = sex), position = "dodge")
 ````
 Figure 9: Number of individuals of each sex by species surveyed. 
 
-#10 relationship between species weight and sex
+###10. relationship between species weight and sex
 ```{r weight_sex}
 #this one looks a little weird, gotta play around with it 
 ggplot(surveys_NAsrem) + geom_boxplot(aes(x = species_id, y = weight, fill = sex)) +
@@ -170,7 +118,7 @@ ggplot(surveys_NAsrem) + geom_boxplot(aes(x = species_id, y = weight, fill = sex
 ```
 Figure 10: Box plot (axis fliped) showing the relationship between species sex and weight
 
-#11 Number of individuals seen over time, separated by sex 
+###11. Number of individuals seen over time, separated by sex 
 ````{r individuals_sex_over_time}
 yearly_sex_counts <- surveys_NAsrem %>% group_by(year, species_id, sex) %>%
   tally
@@ -181,10 +129,3 @@ ggplot(data = yearly_sex_counts, aes(x = year, y = n, color = sex, group = sex))
 ````
 Figure 11: Number of individuals of each sex seen over time, separated by species 
 
-#12 Relationship between hindfoot length and weight of species OT
-````{r OT_weight_hindfoot_length}
-species_OT <- surveys_NAsrem %>% filter(species_id == 'OT')
-ggscatter(species_OT, x = "weight", y = "hindfoot_length", color = "black", shape = 21, size = 2, add = "reg.line", conf.int = TRUE, 
-          cor.coef = TRUE, cor.method = "pearson",  xlab = "Hindfoot Length (inch)", ylab = "Weight (gram)")
-````
-Figure 12: Relationship between hindfoot length and weight of individuals for species OT. 
