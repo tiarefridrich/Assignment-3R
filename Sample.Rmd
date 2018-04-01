@@ -84,7 +84,7 @@ Include “session info” in your document, preferably at the bottom: that list
 
 These are the packages we need to deal with
 
-```{r}
+```{r load libraries}
 library(tidyverse)
 library(ggplot2)
 library(lubridate)
@@ -185,6 +185,8 @@ Figure 11: Number of individuals surveyed by month of the year
 yearly_sex_counts <- surveys_NAsrem %>% group_by(year, species_id, sex) %>%
   tally
 ggplot(data = yearly_sex_counts, aes(x = year, y = n, color = sex, group = sex)) +
-  geom_line() + facet_wrap(~ species_id) + theme_bw() +ylab('Number of Individuals') + xlab('Year')+ theme(axis.text.x = element_text(angle = 90))
+  geom_line() +
+  facet_wrap(~ species_id) +
+  theme_bw() +ylab('Number of Individuals') + xlab('Year')+ theme(axis.text.x = element_text(angle = 90))
 ````
 Figure 12: Number of individuals of each sex seen over time, separated by species 
