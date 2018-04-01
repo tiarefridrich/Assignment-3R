@@ -1,0 +1,123 @@
+---
+title: "R Homework Assignment"
+author: "Mamoon Y. Ismail, Jeeban Panthi, Tiare Fridrich"
+date: "`r Sys.Date()`"
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+---
+
+**BOLD**
+
+_ITALICS_
+
+1- The backticks (`) indicate code
+
+2- r indicates R code
+
+
+3- In-line code: is how to include r code results into text
+
+The version of R is `r getRversion()`
+
+4- It’s usually best to give each code chunk a name, like chunk_name ```{r chunk_name}
+
+5- echo=FALSE indicates that the code will not be shown in the final document like this ```{r chunk_name, echo=FALSE}
+
+6- Use results="hide" to hide the results/output (but here the code would still be displayed), ```{r chunk_name, results="hide"}
+
+7- Use include=FALSE to have the chunk evaluated, but neither the code nor its output displayed, ```{r chunk_name, include=FALSE}
+
+8- For figures, you’ll want to use options like fig.width and fig.height. For example: {r scatterplot, fig.width=8, fig.height=6}. Note that if include=FALSE, all of the code, results, and figures will be suppressed. If include=TRUE and results="hide", the results will be hidden but figures will still be shown. To hide the figures, use fig.show="hide". NOTE: results=hide is wrong; you need results="hide".
+
+9- Global chunk options: use the same set of chunk options throughout a document to avoid retype it in every chunk, so you want to set some global chunk options at the top of your document. For example, I might use include=FALSE or at least echo=FALSE globally for a report to a scientific collaborator who wouldn’t want to see all of the code. And I might want something like fig.width=12 and fig.height=6 if I generally want those sizes for my figures.
+
+10- If you want a particular chunk to have a different behavior, for example, to have a different figure height, you’d specify a different option within that chunk. For example: {r a_taller_figure, fig.height=32}.
+
+
+### Loading librarry
+
+A chunk needed to load the library
+
+```{r loadlib, echo=TRUE}
+library(tidyverse)
+```
+
+## Global Options
+
+
+```{r global_options, include=TRUE}
+#These are default settings eg fig size or whether you print code
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE,
+                      fig.width=12, fig.height=8, fig.path='figs/')
+```
+
+## SURVEYS
+
+This is a survey data that has been collected about animal species.
+
+
+
+### Reading Data
+
+
+
+Reading Colected data into a file called survey
+
+
+
+```{r loaddata, echo=TRUE}
+surveys <- read_csv("~/Desktop/rclass/homework/Assignment-3R/data_output/surveys_NAsrem.csv")
+
+```
+
+
+## Plotting
+
+Add plots of different relations
+
+
+
+## Session Info:
+
+Include “session info” in your document, preferably at the bottom: that lists the version of R that you’re using plus all of the packages you’ve loaded
+
+These are the packages we need to deal with
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(lubridate)
+library(gridExtra)
+library(dplyr)
+library(ggpubr)
+library(Hmisc) 
+```
+
+###1. Relationship between sex and hindfoot length
+```{r}
+ggplot(surveys, aes(x=sex, y=hindfoot_length))+geom_boxplot(alpha = 1, color='red')+xlab('Sex')+ylab('Length of hindfoot (inch)')+stat_summary(fun.y=mean, color="blue", geom="point",  shape=15, size=1,show_guide = T, show.legend = T)
+```
+Figure 1: Hindfoot length for male and female. The blue dot indicates the mean (average) hindfoot length. 
+
+###2. Number of individuals of each of the species classfied by sex
+```{r}
+ggplot(surveys, aes(species_id))+geom_bar(aes(fill=sex))+ylab('Number of individuals recorded')+xlab('Species ID')+theme(axis.text = element_text(angle = 90)) 
+```
+Figure 2: Number of individuals of each of the species classfied by sex
+
+#3. Correlationship between weight and hindfoot length
+```{r}
+ggscatter(surveys, x = "weight", y = "hindfoot_length", color = "black", shape = 21, size = 2, add = "reg.line", conf.int = TRUE, cor.coef = TRUE, cor.method = "pearson",  xlab = "Hindfoot Length (inch)", ylab = "Weight (gram)")
+```
+Figure 3: Scatter plot showing the correlation between weight and hindfoot length of species
+
+The p-value of the test is less than the significance level alpha = 0.05. We can conclude that weight and hindfoot length are significantly positively correlated with a correlation coefficient of 0.68 and p-value of 2.2*10^{-16}
+
+#4.4.	Hindfoot length of different species
+```{r}
+ggplot(data = surveys, aes(x = species_id, y = hindfoot_length)) +  geom_boxplot(alpha=1, color='black')+xlab('Species ID')+ylab('Hindfoot length (inch)')+stat_summary(fun.y=mean, color="blue", geom="point",  shape=15, size=1,show_guide = T, show.legend = T)+
+  theme(axis.text = element_text(angle = 90)) 
+```
+Figure 4: Box plot of hindfoot length of different species. The blue dot indicates the average (mean) hindfoot length.
