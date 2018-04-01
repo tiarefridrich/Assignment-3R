@@ -2,7 +2,9 @@
 title: "R Homework Assignment"
 author: "Jeeban Panthi, Mamoon Y. Ismail, Tiare Fridrich"
 date: "`r Sys.Date()`"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
 ---
 
 **BOLD**
@@ -65,7 +67,7 @@ Reading Colected data into a file called survey
 
 
 ```{r loaddata, echo=TRUE}
-surveys <- read_csv("~/Desktop/rclass/homework/Assignment-3R/data_output/surveys_NAsrem.csv")
+surveys_NAsrem <- read_csv("~/Desktop/data-shell/Sample_Class/data_output/surveys_NAsrem.csv")
 
 ```
 
@@ -125,6 +127,7 @@ Figure 4: Box plot of hindfoot length of different species. The blue dot indicat
 
 #5 Number of species found yearly
 ```{r species_count}
+yearly_counts <- surveys_NAsrem %>% group_by(year, species_id) %>% tally()
 ggplot(data = yearly_counts, aes(x=year, y=n, group = species_id, color = species_id)) + 
   geom_line() + facet_wrap(~ species_id) + theme_bw() +ylab('Number of Individuals') + xlab('Year')
 ```
@@ -172,7 +175,7 @@ Figure 10: Box plot (axis fliped) showing the relationship between species sex a
 
 #11 Number of individuals seen by month of the year
 ````{r}
-ggplot(data = species_by_month, aes(x=month, y=n, group = species_id, color = species_id, group = species_id)) + 
+ggplot(surveys_NAsrem, aes(x=month, y=n, group = species_id, color = species_id, group = species_id)) + 
   geom_line() +ylab('Number of Individuals')+ xlab('Month of the Year')
 ````
 Figure 11: Number of individuals surveyed by month of the year
