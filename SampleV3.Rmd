@@ -11,7 +11,6 @@ output:
 
 Time-series data for a small mammal community in southern Arizona. Studying the effects of rodents and ants on the plant community that has been running for almost 40 years. Analyzing the the dataset to investigate trends and relationships. 
 
-
 ## Global Options
 
 ```{r global_options, include=TRUE}
@@ -38,7 +37,6 @@ library(Hmisc)
 surveys <- read_csv("https://ndownloader.figshare.com/files/2292169")
 surveys_NAsrem <- surveys %>% filter(!is.na(weight), !is.na(hindfoot_length), !is.na(sex), species_id != "")
 ```
-
 
 #Plots
 
@@ -102,7 +100,6 @@ ggplot(spe_meanweight, aes(x=year, y=mean_weight, color=sex)) +
   theme(panel.grid = element_blank()) + xlab('Year') + ylab('Average weight (gram)') + theme(axis.text.x = element_text(colour = "grey20", size = 10, angle = 90, hjust = 0.5, vjust = 0.5))
 ```
 Figure 6: time series faceting plot showing yearly average weight of each male and female species.
-
 
 ###7. Correlationship between weight and hindfoot length
 ```{r weight_and_hindfoot_length}
