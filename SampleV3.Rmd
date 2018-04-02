@@ -1,6 +1,6 @@
 ---
 title: "R Homework Assignment 3"
-author: "Jeeban Panthi, Mamoon Y. Ismail, Tiare Fridrich "
+author: "Jeeban Panthi, Mamoon Y. Ismail, Tiare J. Fridrich "
 date: "`r Sys.Date()`"
 output:
   html_document: default
