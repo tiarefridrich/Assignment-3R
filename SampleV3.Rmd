@@ -30,7 +30,6 @@ library(gridExtra)
 library(dplyr)
 library(ggpubr)
 library(Hmisc)
-#want the output to be hidden but not the packages?
 ```
 
 ## Reading Data
@@ -44,23 +43,23 @@ surveys_NAsrem <- surveys %>% filter(!is.na(weight), !is.na(hindfoot_length), !i
 #Plots
 
 ###1. Count of females and males of each species observed 
-````{r number_individuals_species_sex}
+```{r number_individuals_species_sex}
 ggplot(surveys_NAsrem) + stat_count(aes(x = species_id, fill = sex), position = "dodge")+ylab('Number of individuals recorded')+xlab('Species ID')+theme(axis.text.x = element_text(angle = 90))
-````
+```
 Figure 1: Number of individuals of each of the species classfied by sex.
 
 The species 'DM' has the highest population recorded over the whole period of observation.
 
 
 ###2. Number of individuals observed over time separated by sex 
-````{r individuals_sex_over_time}
+```{r individuals_sex_over_time}
 yearly_sex_counts <- surveys_NAsrem %>% group_by(year, species_id, sex) %>%
   tally
 ggplot(data = yearly_sex_counts, aes(x = year, y = n, color = sex, group = sex)) +
   geom_line() +
   facet_wrap(~ species_id) +
   theme_bw() +ylab('Number of Individuals') + xlab('Year')+ theme(axis.text.x = element_text(angle = 90))
-````
+```
 Figure 2: Number of individuals of each sex observed over time, separated by species
 
 The species 'PL' has abruptly gone up since 1995, which did not show up before. 
@@ -92,7 +91,7 @@ ggplot(surveys_NAsrem, aes(x=sex, y=hindfoot_length))+
 ```
 Figure 5: Hindfoot length for male and female. The red dots indicate the mean (average) hindfoot length. 
 
-Mean and Median values of hindfoot length of male are higher than those of femal
+Mean and Median values of hindfoot length of male are higher than those of female.
 
 ###6. Males and females average weight over time
 ```{r Sex_average_weight}
@@ -100,39 +99,36 @@ spe_meanweight <- surveys_NAsrem %>% group_by(year,species_id, sex) %>%
   mutate(mean_weight = mean(weight))
 ggplot(spe_meanweight, aes(x=year, y=mean_weight, color=sex)) +
   geom_line()+facet_wrap(~species_id) + theme_bw() +
-  theme(panel.grid = element_blank()) + xlab('Year') + ylab('Average weight (gram)')
-  theme(axis.text.x = element_text(colour = "grey20", size = 10, angle = 90, hjust = 0.5, vjust = 0.5))
+  theme(panel.grid = element_blank()) + xlab('Year') + ylab('Average weight (gram)') + theme(axis.text.x = element_text(colour = "grey20", size = 10, angle = 90, hjust = 0.5, vjust = 0.5))
 ```
 Figure 6: time series faceting plot showing yearly average weight of each male and female species.
 
 
 ###7. Correlationship between weight and hindfoot length
 ```{r weight_and_hindfoot_length}
-ggscatter(surveys_NAsrem, x = "weight", y = "hindfoot_length", color = "red", shape = 21, size = 2, add = "reg.line", conf.int = TRUE, cor.coef = TRUE, cor.method = "pearson",  xlab = "Hindfoot Length (mm)", ylab = "Weight (gram)")
+ggscatter(surveys_NAsrem, x = "weight", y = "hindfoot_length", color = "black", shape = 21, size = 2, add = "reg.line", conf.int = TRUE, cor.coef = TRUE, cor.method = "pearson",  xlab = "Hindfoot Length (mm)", ylab = "Weight (gram)")
+
+c7 <- cor.test(surveys_NAsrem$weight,surveys_NAsrem$hindfoot_length)
 ```
 Figure 7: Scatter plot showing the correlation between weight and hindfoot length of species
 
-The p-value of the test is less than the significance level alpha = 0.05. We can conclude that weight and hindfoot length are significantly positively correlated with a correlation coefficient of 0.68 and p-value of 2.2*10^{-16}
+The p-value of the test is less than the significance level alpha = 0.05. We can conclude that weight and hindfoot length are significantly positively correlated with a correlation coefficient of (`r c7$estimate`) and p-value of (`r c7$p.value`).
 
 ###8. Relationship between hindfoot length and weight of species OT
-````{r OT_weight_hindfoot_length}
+```{r OT_weight_hindfoot_length}
 species_OT <- surveys_NAsrem %>% filter(species_id == 'OT')
-ggscatter(species_OT, x = "weight", y = "hindfoot_length", color = "blue", shape = 21, size = 2, add = "reg.line", conf.int = TRUE, 
+ggscatter(species_OT, x = "weight", y = "hindfoot_length", color = "black", shape = 21, size = 2, add = "reg.line", conf.int = TRUE, 
           cor.coef = TRUE, cor.method = "pearson",  xlab = "Hindfoot Length (mm)", ylab = "Weight (gram)")
-````
+
+c8 <- cor.test(species_OT$weight,species_OT$hindfoot_length)
+```
 Figure 8: Relationship between hindfoot length and weight of individuals for species OT. 
 
-Here, the p-value is less than 0.05, therfore the correlation coefficient (*0.14) is statistically significant at 95% confidence interval
+Here, the p-value is (`r c8$p.value`), therfore the correlation coefficient (`r c8$estimate`) is statistically significant at 95% confidence interval.
 
 ###9. Relationship between species weight and sex
 ```{r weight_sex}
-#this one looks a little weird, gotta play around with it 
 ggplot(surveys_NAsrem) + geom_boxplot(aes(x = species_id, y = weight, fill = sex)) +
   coord_flip()
 ```
 Figure 9: Box plot (axis fliped) showing the relationship between species sex and weight
-
- 
-### Relationship not possible
-
-The relationship of record_id variable with others does not make sense because this is just an identify and is nominal. Also, the relationship of species weight and hindfoot lentgh with different dates of month also does not make sense because there is no any cycles in weather and other parameters within a month unlike in a year.
