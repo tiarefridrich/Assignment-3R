@@ -60,7 +60,7 @@ ggplot(data = yearly_sex_counts, aes(x = year, y = n, color = sex, group = sex))
 ```
 Figure 2: Number of individuals of each sex observed over time, separated by species
 
-The species 'PL' has abruptly gone up since 1995, which did not show up before. 
+The species 'PL' has abruptly gone up since 1995, which did not show up before. Where some other species shown up for a certain period of time. 
 
 ###3. Total Number of individuals of all species surveyed yearly by plot type
 ```{r species_count_by_plot}
@@ -69,7 +69,7 @@ ggplot(Plot_counts, aes(x=year, y=n, color=plot_type)) + geom_line()+facet_wrap(
 ```
 Figure 3: Time series faceting plot showing the count of individuals observed in each plot type yearly.
 
-Plot type 'control' has the highest record of individuals total of all species recoreded
+Plot type 'control' has the highest record of observation for individuals of all species.
 
 ###4.	Hindfoot length of different species
 ```{r boxplot_hindfoot_lengths_different_species}
@@ -101,6 +101,8 @@ ggplot(spe_meanweight, aes(x=year, y=mean_weight, color=sex)) +
 ```
 Figure 6: time series faceting plot showing yearly average weight of each male and female species.
 
+The plot shows that species 'NL' is the heaviest species among the others, and has noticable difference in weight between males and females, were males are generally heavier. Followed by 'Ds' species which is  shows difference in weight between males and females. 
+
 ###7. Correlationship between weight and hindfoot length
 ```{r weight_and_hindfoot_length}
 ggscatter(surveys_NAsrem, x = "weight", y = "hindfoot_length", color = "black", shape = 21, size = 2, add = "reg.line", conf.int = TRUE, cor.coef = TRUE, cor.method = "pearson",  xlab = "Hindfoot Length (mm)", ylab = "Weight (gram)")
@@ -128,4 +130,29 @@ Here, the p-value is (`r c8$p.value`), therfore the correlation coefficient (`r 
 ggplot(surveys_NAsrem) + geom_boxplot(aes(x = species_id, y = weight, fill = sex)) +
   coord_flip()
 ```
-Figure 9: Box plot (axis fliped) showing the relationship between species sex and weight
+Figure 9: Box plot showing the relationship between species sex and weight
+
+It is obvious that range of weight between males and females of the same species varies for the most species, but doesn't have a common trend in favor of any sex among all of the species. 
+
+###10. Relationship between hindfoot length and weight of species 'NL'
+```{r NL_weight_hindfoot_length}
+NL_species <- filter(surveys_NAsrem, species_id == 'NL')
+scatter.smooth(x=NL_species$weight, y=NL_species$hindfoot_length, col = "blue", xlab = "wieght", ylab = "Hingfoot_length", main="Weight(gram) ~ hindfoot_length(mm)")
+cor(NL_species$weight, NL_species$hindfoot_length)
+linearMod <- lm(weight ~ hindfoot_length, data=NL_species)
+summary(linearMod)
+
+```
+NOTE: I couldn't print out p-value and correlation, it was giving me error, help needed.
+OR we can neglect this plot (but i like it because I used Linear Model with Rachel liked)
+
+
+###11. or we can use this one with ggplot for the same variables above (what ever you like)
+```{r NL_weight_hindfoot_length2}
+NL_species <- filter(surveys_NAsrem, species_id == 'NL')
+ggplot(NL_species, aes(x = weight, y = hindfoot_length)) +
+  geom_point() +
+  labs(x = "Weight (gram)", y = "Hindfoot length(mm)", title = "Relationship between weight and hindfoot length") +  
+  geom_smooth(method = "lm")
+```
+
