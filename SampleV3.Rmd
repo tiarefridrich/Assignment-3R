@@ -65,7 +65,7 @@ The species 'PL' has abruptly gone up since 1995, which did not show up before. 
 ###3. Total Number of individuals of all species surveyed yearly by plot type
 ```{r species_count_by_plot}
 Plot_counts <- surveys_NAsrem %>% group_by(year, plot_type) %>% tally()
-ggplot(Plot_counts, aes(x=year, y=n, color=plot_type)) + geom_line()+facet_wrap(~plot_type)
+ggplot(Plot_counts, aes(x=year, y=n, color=plot_type, legend=F)) + geom_line()+facet_wrap(~plot_type)
 ```
 Figure 3: Time series faceting plot showing the count of individuals observed in each plot type yearly.
 
@@ -79,7 +79,7 @@ ggplot(surveys_NAsrem, aes(x = species_id, y = hindfoot_length)) +
 ```
 Figure 4: Box plot of hindfoot length of different species. The blue dot indicates the average (mean) hindfoot length.
 
-The species 'DS' has the highest hindfoot length among the others
+The species 'DS' has the highest hindfoot length among the others and the species 'BA" has the shortest. 
 
 ###5. Relationship between sex and hindfoot length
 ```{r relationship between sex and hindfoot length boxplot}
@@ -111,7 +111,7 @@ c7 <- cor.test(surveys_NAsrem$weight,surveys_NAsrem$hindfoot_length)
 ```
 Figure 7: Scatter plot showing the correlation between weight and hindfoot length of species
 
-The p-value of the test is less than the significance level alpha = 0.05. We can conclude that weight and hindfoot length are significantly positively correlated with a correlation coefficient of `r c7$estimate` and p-value of `r c7$p.value`.
+The p-value of the test is less than the significance level alpha = 0.05. We can conclude that weight and hindfoot length are significantly positively correlated with a correlation coefficient of `r c7$estimate` and p-value of `r c7$p.value` (rounding off).
 
 ###8. Relationship between hindfoot length and weight of species OT
 ```{r OT_weight_hindfoot_length}
