@@ -19,7 +19,7 @@ knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE,
 ```
 
 
-## Session Info:
+## Required R packages 
 
 ```{r loadlib, echo=TRUE}
 library(tidyverse)
@@ -65,11 +65,11 @@ The species 'PL' has abruptly gone up since 1995, which did not show up before. 
 ###3. Total Number of individuals of all species surveyed yearly by plot type
 ```{r species_count_by_plot}
 Plot_counts <- surveys_NAsrem %>% group_by(year, plot_type) %>% tally()
-ggplot(Plot_counts, aes(x=year, y=n, color=plot_type, legend=F)) + geom_line()+facet_wrap(~plot_type)
+ggplot(Plot_counts, aes(x=year, y=n, color=plot_type, legend=F)) + geom_line()+geom_smooth(method = "lm")+facet_wrap(~plot_type)
 ```
 Figure 3: Time series faceting plot showing the count of individuals observed in each plot type yearly.
 
-Plot type 'control' has the highest record of observation for individuals of all species.
+Plot type 'control' has the highest record of observation for individuals of all species and the same plot has highest increasing slope of all the species.The shaded area around the trend lines indicate the 95% confidence interval. 
 
 ###4.	Hindfoot length of different species
 ```{r boxplot_hindfoot_lengths_different_species}
