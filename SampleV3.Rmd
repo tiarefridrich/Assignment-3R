@@ -134,25 +134,16 @@ Figure 9: Box plot showing the relationship between species sex and weight
 
 It is obvious that range of weight between males and females of the same species varies for the most species, but doesn't have a common trend in favor of any sex among all of the species. 
 
-###10. Relationship between hindfoot length and weight of species 'NL'
-```{r NL_weight_hindfoot_length}
-NL_species <- filter(surveys_NAsrem, species_id == 'NL')
-scatter.smooth(x=NL_species$weight, y=NL_species$hindfoot_length, col = "blue", xlab = "wieght", ylab = "Hingfoot_length", main="Weight(gram) ~ hindfoot_length(mm)")
-cor(NL_species$weight, NL_species$hindfoot_length)
-linearMod <- lm(weight ~ hindfoot_length, data=NL_species)
-summary(linearMod)
-
-```
-NOTE: I couldn't print out p-value and correlation, it was giving me error, help needed.
-OR we can neglect this plot (but i like it because I used Linear Model with Rachel liked)
-
-
-###11. or we can use this one with ggplot for the same variables above (what ever you like)
+###10. or we can use this one with ggplot for the same variables above (what ever you like)
 ```{r NL_weight_hindfoot_length2}
 NL_species <- filter(surveys_NAsrem, species_id == 'NL')
 ggplot(NL_species, aes(x = weight, y = hindfoot_length)) +
   geom_point() +
   labs(x = "Weight (gram)", y = "Hindfoot length(mm)", title = "Relationship between weight and hindfoot length") +  
   geom_smooth(method = "lm")
-```
 
+c10 <- cor.test(surveys_NAsrem$weight,surveys_NAsrem$hindfoot_length)
+```
+Figure 10: Scatter plot showing the correlation between weight and hindfoot length of species
+
+The p-value of the test is less than the significance level alpha = 0.05. We can conclude that weight and hindfoot length are significantly positively correlated with a correlation coefficient of (`r c10$estimate`) and p-value of (`r c10$p.value`).
