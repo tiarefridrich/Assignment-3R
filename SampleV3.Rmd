@@ -101,7 +101,7 @@ ggplot(spe_meanweight, aes(x=year, y=mean_weight, color=sex)) +
 ```
 Figure 6: time series faceting plot showing yearly average weight of each male and female species.
 
-The plot shows that species 'NL' is the heaviest species among the others, and has noticable difference in weight between males and females, were males are generally heavier. Followed by 'Ds' species which is  shows difference in weight between males and females. 
+The plot shows that species 'NL' is the heaviest species among the others, and has noticable difference in weight between males and females, were males are generally heavier. Followed by 'Ds' species which  shows difference in weight between males and females. 
 
 ###7. Correlationship between weight and hindfoot length
 ```{r weight_and_hindfoot_length}
