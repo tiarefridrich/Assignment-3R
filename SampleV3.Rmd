@@ -84,7 +84,7 @@ The species 'DS' has the highest hindfoot length among the others
 ###5. Relationship between sex and hindfoot length
 ```{r relationship between sex and hindfoot length boxplot}
 ggplot(surveys_NAsrem, aes(x=sex, y=hindfoot_length))+
-  geom_boxplot(alpha = 1,color='blue')+xlab('Sex')+ylab('Length of hindfoot (inch)')+
+  geom_boxplot(alpha = 1,color='blue')+xlab('Sex')+ylab('Length of hindfoot (mm)')+
   stat_summary(fun.y=mean, color="red", geom="point", shape=15, size=1,show_guide = T, show.legend = T) + theme_bw()
 ```
 Figure 5: Hindfoot length for male and female. The red dots indicate the mean (average) hindfoot length. 
@@ -111,7 +111,7 @@ c7 <- cor.test(surveys_NAsrem$weight,surveys_NAsrem$hindfoot_length)
 ```
 Figure 7: Scatter plot showing the correlation between weight and hindfoot length of species
 
-The p-value of the test is less than the significance level alpha = 0.05. We can conclude that weight and hindfoot length are significantly positively correlated with a correlation coefficient of (`r c7$estimate`) and p-value of (`r c7$p.value`).
+The p-value of the test is less than the significance level alpha = 0.05. We can conclude that weight and hindfoot length are significantly positively correlated with a correlation coefficient of `r c7$estimate` and p-value of `r c7$p.value`.
 
 ###8. Relationship between hindfoot length and weight of species OT
 ```{r OT_weight_hindfoot_length}
@@ -123,27 +123,27 @@ c8 <- cor.test(species_OT$weight,species_OT$hindfoot_length)
 ```
 Figure 8: Relationship between hindfoot length and weight of individuals for species OT. 
 
-Here, the p-value is (`r c8$p.value`), therfore the correlation coefficient (`r c8$estimate`) is statistically significant at 95% confidence interval.
+Here, the p-value is `r c8$p.value`, therfore the correlation coefficient `r c8$estimate` is statistically significant at 95% confidence interval.
 
 ###9. Relationship between species weight and sex
 ```{r weight_sex}
 ggplot(surveys_NAsrem) + geom_boxplot(aes(x = species_id, y = weight, fill = sex)) +
-  coord_flip()
+  coord_flip()+ylab('Weight(gram)')+xlab('Species ID')
 ```
 Figure 9: Box plot showing the relationship between species sex and weight
 
 It is obvious that range of weight between males and females of the same species varies for the most species, but doesn't have a common trend in favor of any sex among all of the species. 
 
-###10. or we can use this one with ggplot for the same variables above (what ever you like)
+###10. Hindfoot length vs weight of Species 'NL' (repeatitive)
 ```{r NL_weight_hindfoot_length2}
 NL_species <- filter(surveys_NAsrem, species_id == 'NL')
 ggplot(NL_species, aes(x = weight, y = hindfoot_length)) +
   geom_point() +
-  labs(x = "Weight (gram)", y = "Hindfoot length(mm)", title = "Relationship between weight and hindfoot length") +  
+  labs(x = "Weight (gram)", y = "Hindfoot length(mm)") +  
   geom_smooth(method = "lm")
 
 c10 <- cor.test(surveys_NAsrem$weight,surveys_NAsrem$hindfoot_length)
 ```
 Figure 10: Scatter plot showing the correlation between weight and hindfoot length of species
 
-The p-value of the test is less than the significance level alpha = 0.05. We can conclude that weight and hindfoot length are significantly positively correlated with a correlation coefficient of (`r c10$estimate`) and p-value of (`r c10$p.value`).
+The p-value of the test is less than the significance level alpha = 0.05. We can conclude that weight and hindfoot length are significantly positively correlated with a correlation coefficient of `r c10$estimate` and p-value of `r c10$p.value`.
