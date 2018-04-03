@@ -134,16 +134,3 @@ Figure 9: Box plot showing the relationship between species sex and weight
 
 It is obvious that range of weight between males and females of the same species varies for the most species, but doesn't have a common trend in favor of any sex among all of the species. 
 
-###10. Hindfoot length vs weight of Species 'NL' (repeatitive)
-```{r NL_weight_hindfoot_length2}
-NL_species <- filter(surveys_NAsrem, species_id == 'NL')
-ggplot(NL_species, aes(x = weight, y = hindfoot_length)) +
-  geom_point() +
-  labs(x = "Weight (gram)", y = "Hindfoot length(mm)") +  
-  geom_smooth(method = "lm")
-
-c10 <- cor.test(surveys_NAsrem$weight,surveys_NAsrem$hindfoot_length)
-```
-Figure 10: Scatter plot showing the correlation between weight and hindfoot length of species
-
-The p-value of the test is less than the significance level alpha = 0.05. We can conclude that weight and hindfoot length are significantly positively correlated with a correlation coefficient of `r c10$estimate` and p-value of `r c10$p.value`.
